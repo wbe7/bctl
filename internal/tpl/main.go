@@ -25,8 +25,8 @@ include:
 func ChartTemplate() []byte {
 	return []byte(`apiVersion: v2
 appVersion: 1.0.0 # версия ПРИЛОЖЕНИЯ в чарте
-description: A Helm chart for {{ .ProjectName }}-{{ if .AppName }}{{ .AppName }}{{ else }}argocd{{ end }}
-name: {{ if .AppName }}{{ .AppName }}{{ else }}argocd{{ end }}
+description: A Helm chart for {{ .ProjectName }}-{{ if .ModuleName }}{{ .ModuleName }}{{ else }}argocd{{ end }}
+name: {{ if .ModuleName }}{{ .ModuleName }}{{ else }}argocd{{ end }}
 type: application
 version: 0.1.0 # версия ЧАРТА, обнуляется (0.1.0) с каждым релизом
 dependencies:
@@ -52,8 +52,19 @@ func ArgoValuesTemplate() []byte {
 
 func ArgoModuleValuesTemplate() []byte {
 	return []byte(`
-          - name: {{ .AppName }}
+          - name: {{ .ModuleName }}
             valuesFiles:
               env: true # env_values/env/env-proj.yaml
               ver: true # module_version.yaml`)
+}
+
+func ModuleValuesTemplate() []byte {
+	return []byte(`base:
+
+  chartName: "{{ .ProjectName }}"
+  hashicorpv1: true
+
+  deployment:
+    replicas: 1
+`)
 }
