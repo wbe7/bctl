@@ -1,34 +1,31 @@
 package tpl
 
 func ReadmeTemplate() []byte {
-	return []byte(`
-# armt-deploy
+	return []byte(`# {{ .ProjectName }}
 
-# armt-deploy
+## {{ .Path }}
 
-install argocd-armt
+Install argocd-{{ .ProjectName }}
 ` + "```" + `bash
-helm upgrade --install argocd-armt ./armt-argocd -f armt-argocd/values.yaml --kubeconfig ~/.kube/kubeconfig -n dev-webarm
+helm upgrade --install argocd-{{ .ProjectName }} ./{{ .ProjectName }}-argocd -f {{ .ProjectName }}-argocd/values.yaml --kubeconfig ~/.kube/kubeconfig -n dev-{{ .ProjectName }}
 ` + "```")
 }
 
 func CiTemplate() []byte {
-	return []byte(`
-stages:
+	return []byte(`stages:
   - build
 
 include:
-  - project: 'tc-center/infra/App/autodeploy'
+  - project: 'tc-center/infra/App/base/autodeploy'
     ref: master
     file: '.gitlab-ci.yml'
 `)
 }
 
 func ChartTemplate() []byte {
-	return []byte(`
-apiVersion: v2
+	return []byte(`apiVersion: v2
 appVersion: 1.0.0 # версия ПРИЛОЖЕНИЯ в чарте
-description: A Helm chart for {{ .ProjectName }}-{{ .AppName }}
+description: A Helm chart for {{ .ProjectName }}-{{ if .AppName }}{{ .AppName }}{{ else }}argocd{{ end }}
 name: {{ if .AppName }}{{ .AppName }}{{ else }}argocd{{ end }}
 type: application
 version: 0.1.0 # версия ЧАРТА, обнуляется (0.1.0) с каждым релизом
@@ -40,8 +37,7 @@ dependencies:
 }
 
 func ArgoValuesTemplate() []byte {
-	return []byte(`
-base:
+	return []byte(`base:
 
   chartName: "{{ .ProjectName }}"
 

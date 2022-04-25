@@ -6,7 +6,6 @@ package cmd
 
 import (
 	"fmt"
-	"git.tccenter.ru/tc-center/infra/App/base/bctl/internal/tpl"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -21,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Short: "Создание проекта с base архитектурой",
 	Long: `CLI-инструмент для создания проекта деплоя
 на основе типовой архитектуры Отдела сопровождения и внедрения ИТ-продуктов,
-используя base чарт и типовой .gitlab-ci.yaml для автодеплоя приложений.` + string(tpl.ReadmeTemplate()) + string(tpl.CiTemplate()) + string(tpl.ChartTemplate()) + string(tpl.ArgoValuesTemplate()) + string(tpl.ArgoModuleValuesTemplate()),
+используя base чарт и типовой .gitlab-ci.yaml для автодеплоя приложений.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -48,6 +47,7 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(initCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
