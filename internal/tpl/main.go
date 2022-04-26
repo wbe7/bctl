@@ -1,3 +1,8 @@
+/*
+Copyright © 2022 Mikhail Tikhonov mikhail.tikhonov@stoloto.ru
+
+*/
+
 package tpl
 
 func ReadmeTemplate() []byte {
