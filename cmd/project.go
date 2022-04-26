@@ -59,9 +59,8 @@ func (p *Project) Create() error {
 	}
 
 	// create {{ .ProjectName }}-argocd/Chart.yaml
-	if _, err = os.Stat(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName)); os.IsNotExist(err) {
-		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName), 0751))
-	}
+	createDir(p, fmt.Sprintf("%s-argocd", p.ProjectName))
+
 	chartFile, err := os.Create(fmt.Sprintf("%s/%s-argocd/Chart.yaml", p.AbsolutePath, p.ProjectName))
 	if err != nil {
 		return err
@@ -75,9 +74,6 @@ func (p *Project) Create() error {
 	}
 
 	// create {{ .ProjectName }}-argocd/values.yaml
-	if _, err = os.Stat(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName)); os.IsNotExist(err) {
-		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName), 0751))
-	}
 	valuesFile, err := os.Create(fmt.Sprintf("%s/%s-argocd/values.yaml", p.AbsolutePath, p.ProjectName))
 	if err != nil {
 		return err
@@ -89,15 +85,28 @@ func (p *Project) Create() error {
 	if err != nil {
 		return err
 	}
+
+	// create env-values/{ENV}
+	createDir(p, "env-values")
+
+	createDir(p, "env-values/dev")
+
+	createDir(p, "env-values/tfi")
+
+	createDir(p, "env-values/tifa")
+
+	createDir(p, "env-values/tli")
+
+	createDir(p, "env-values/prod")
+
 	return nil
 }
 
 func (p *Project) AddModule() error {
 
 	// create {{ .ProjectName }}-argocd/values.yaml
-	if _, err := os.Stat(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName)); os.IsNotExist(err) {
-		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/%s-argocd", p.AbsolutePath, p.ProjectName), 0751))
-	}
+	createDir(p, fmt.Sprintf("%s-argocd", p.ProjectName))
+
 	argoValuesFile, err := os.OpenFile(fmt.Sprintf("%s/%s-argocd/values.yaml", p.AbsolutePath, p.ProjectName), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -111,6 +120,8 @@ func (p *Project) AddModule() error {
 	}
 
 	// create {{ .ProjectName }}-{{ .ModuleName}}/Chart.yaml
+	createDir(p, fmt.Sprintf("%s-%s", p.ProjectName, p.ModuleName))
+
 	if _, err := os.Stat(fmt.Sprintf("%s/%s-%s", p.AbsolutePath, p.ProjectName, p.ModuleName)); os.IsNotExist(err) {
 		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/%s-%s", p.AbsolutePath, p.ProjectName, p.ModuleName), 0751))
 	}
@@ -127,9 +138,6 @@ func (p *Project) AddModule() error {
 	}
 
 	// create {{ .ProjectName }}-{{ .ModuleName}}/values.yaml
-	if _, err := os.Stat(fmt.Sprintf("%s/%s-%s", p.AbsolutePath, p.ProjectName, p.ModuleName)); os.IsNotExist(err) {
-		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/%s-%s", p.AbsolutePath, p.ProjectName, p.ModuleName), 0751))
-	}
 	valuesFile, err := os.Create(fmt.Sprintf("%s/%s-%s/values.yaml", p.AbsolutePath, p.ProjectName, p.ModuleName))
 	if err != nil {
 		return err
@@ -142,5 +150,46 @@ func (p *Project) AddModule() error {
 		return err
 	}
 
+	// create values env-values
+	err = createEnvValuesFile(p, "dev")
+	if err != nil {
+		return err
+	}
+
+	err = createEnvValuesFile(p, "tfi")
+	if err != nil {
+		return err
+	}
+
+	err = createEnvValuesFile(p, "tifa")
+	if err != nil {
+		return err
+	}
+
+	err = createEnvValuesFile(p, "tli")
+	if err != nil {
+		return err
+	}
+
+	err = createEnvValuesFile(p, "prod")
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func createEnvValuesFile(p *Project, env string) error {
+	envValuesFile, err := os.Create(fmt.Sprintf("%s/env-values/"+env+"/"+env+"-%s-%s.yaml", p.AbsolutePath, p.ProjectName, p.ModuleName))
+	if err != nil {
+		return err
+	}
+	defer envValuesFile.Close()
+	return nil
+}
+
+func createDir(p *Project, dir string) {
+	if _, err := os.Stat(fmt.Sprintf("%s/"+dir, p.AbsolutePath)); os.IsNotExist(err) {
+		cobra.CheckErr(os.Mkdir(fmt.Sprintf("%s/"+dir, p.AbsolutePath), 0751))
+	}
 }
