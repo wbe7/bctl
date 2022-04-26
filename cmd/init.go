@@ -21,7 +21,7 @@ var (
 шаблоном для деплоя Argo приложений и автоматизацией автодеплоя.
 `,
 		Run: func(cmd *cobra.Command, args []string) {
-			projectPath, err := initializeProject(args)
+			projectPath, err := initializeProject()
 			cobra.CheckErr(err)
 			fmt.Printf("Проект деплоя инициализирован в\n%s\n", projectPath)
 		},
@@ -43,7 +43,7 @@ func init() {
 	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func initializeProject(args []string) (string, error) {
+func initializeProject() (string, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return "", err
