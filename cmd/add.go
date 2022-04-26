@@ -14,7 +14,11 @@ import (
 
 // addCmd represents the add command
 var (
-	appName string
+	appName       string
+	moduleImage   string
+	moduleVersion string
+	modulePort    string
+	ingressClass  string
 
 	addCmd = &cobra.Command{
 		Use:   "add [module name]",
@@ -31,8 +35,12 @@ var (
 
 func init() {
 
-	addCmd.Flags().StringVar(&projectName, "project-name", "", "fully qualified project name")
+	addCmd.Flags().StringVar(&projectName, "project-name", "", "Имя проекта (обязательное поле)")
 	cobra.CheckErr(addCmd.MarkFlagRequired("project-name"))
+	addCmd.Flags().StringVar(&moduleImage, "module-image", "", "Образ модуля")
+	addCmd.Flags().StringVar(&moduleVersion, "module-version", "", "Версия модуля")
+	addCmd.Flags().StringVar(&modulePort, "module-port", "", "Порт модуля (по умолчанию: 8080)")
+	addCmd.Flags().StringVar(&ingressClass, "ingress-class", "", "Ингресс класс (по умолчанию: nginx-google-internal)")
 
 	// Here you will define your flags and configuration settings.
 
@@ -63,10 +71,14 @@ func addModule(args []string) (string, error) {
 	}
 
 	project := &Project{
-		Path:         path,
-		AbsolutePath: wd,
-		ProjectName:  projectName,
-		ModuleName:   appName,
+		Path:          path,
+		AbsolutePath:  wd,
+		ProjectName:   projectName,
+		ModuleName:    appName,
+		ModuleImage:   moduleImage,
+		ModuleVersion: moduleVersion,
+		ModulePort:    modulePort,
+		IngressClass:  ingressClass,
 	}
 
 	if err := project.AddModule(); err != nil {

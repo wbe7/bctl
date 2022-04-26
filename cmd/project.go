@@ -17,10 +17,14 @@ import (
 // Project contains name, license and paths to projects.
 type Project struct {
 	// v2
-	Path         string
-	ProjectName  string
-	AbsolutePath string
-	ModuleName   string
+	Path          string
+	ProjectName   string
+	AbsolutePath  string
+	ModuleName    string
+	ModuleImage   string
+	ModuleVersion string
+	ModulePort    string
+	IngressClass  string
 }
 
 func (p *Project) Create() error {
@@ -146,6 +150,19 @@ func (p *Project) AddModule() error {
 
 	valuesTemplate = template.Must(template.New("chart").Parse(string(tpl.ModuleValuesTemplate())))
 	err = valuesTemplate.Execute(valuesFile, p)
+	if err != nil {
+		return err
+	}
+
+	// create {{ .ProjectName }}-{{ .ModuleName}}/module_version.yaml
+	moduleVersionFile, err := os.Create(fmt.Sprintf("%s/%s-%s/module_version.yaml", p.AbsolutePath, p.ProjectName, p.ModuleName))
+	if err != nil {
+		return err
+	}
+	defer moduleVersionFile.Close()
+
+	valuesTemplate = template.Must(template.New("moduleVersion").Parse(string(tpl.ModuleVersionTemplate())))
+	err = valuesTemplate.Execute(moduleVersionFile, p)
 	if err != nil {
 		return err
 	}

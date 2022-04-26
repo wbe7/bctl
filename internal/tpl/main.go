@@ -63,6 +63,14 @@ func ArgoModuleValuesTemplate() []byte {
               ver: true # module_version.yaml`)
 }
 
+func ModuleVersionTemplate() []byte {
+	return []byte(`base:
+  {{ if .ModuleVersion }}module_version: {{ .ModuleVersion }}
+  {{ else }}#TODO
+  module_version: "CHANGEME"{{ end }}
+`)
+}
+
 func ModuleValuesTemplate() []byte {
 	return []byte(`base:
 
@@ -71,5 +79,25 @@ func ModuleValuesTemplate() []byte {
 
   deployment:
     replicas: 1
+    revisionHistoryLimit: 2
+	{{ if .ModuleImage }}imagePath: {{ .ModuleImage }}
+	{{ else }}#TODO
+	imagePath: CHANGEME{{ end }}
+    containerPort:
+      - "{{ if .ModulePort }}{{ .ModulePort }}{{ else }}8080{{ end }}"     
+
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: {{ if .IngressClass }}{{ .IngressClass }}{{ else }}nginx-google-internal{{ end }}
+      # kubernetes.io/tls-acme: "true"
+    cem: # общие настройки для CEM
+      authorLogin: CHANGEME
+      authorEmail: CHANGEME@stoloto.ru
+    hosts:
+      - host: ENV-{{ .ProjectName }}.stoloto.su
+        ca: cem # включаем CEM для этого хоста, может быть cem - серт от orglot.office, external - сгенерированный вручную или полученый от внешнего центра сертификации, le - серт от letsencrypt
+        paths:
+          - path: /
+
 `)
 }
