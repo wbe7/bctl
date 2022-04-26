@@ -38,6 +38,7 @@ compile:
   artifacts:
     paths:
       - binaries
+    expire_in: 1 yrs
   only:
     - tags
 
@@ -62,5 +63,6 @@ upload:
   artifacts:
     paths:
       - binaries
+    expire_in: 1 yrs
   only:
     - tags
