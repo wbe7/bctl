@@ -29,7 +29,7 @@ var (
 )
 
 func init() {
-	initCmd.Flags().StringVar(&projectName, "project-name", "", "fully qualified project name")
+	initCmd.Flags().StringVar(&projectName, "project-name", "", "Имя проекта (обязательное поле)")
 	cobra.CheckErr(initCmd.MarkFlagRequired("project-name"))
 
 	// Here you will define your flags and configuration settings.
