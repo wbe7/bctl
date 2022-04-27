@@ -46,8 +46,7 @@ func ArgoValuesTemplate() []byte {
 
   chartName: "{{ .ProjectName }}"
 
-  argocd:
-	#TODO
+  argocd: 	#TODO
     telegram: "CHANGEME" # id телеграм чата
     repo: # список гит реп
       - repoLink: "git@git.tccenter.ru:tc-center/infra/App/{{ .ProjectName }}-deploy.git" # ссылка на репу
@@ -80,9 +79,10 @@ func ModuleValuesTemplate() []byte {
   deployment:
     replicas: 1
     revisionHistoryLimit: 2
-	{{ if .ModuleImage }}imagePath: {{ .ModuleImage }}
-	{{ else }}#TODO
-	imagePath: CHANGEME{{ end }}
+    {{ if .ModuleImage }}
+    imagePath: {{ .ModuleImage }}
+    {{ else }}
+    imagePath: CHANGEME #TODO{{ end }}
     containerPort:
       - "{{ if .ModulePort }}{{ .ModulePort }}{{ else }}8080{{ end }}"     
 
