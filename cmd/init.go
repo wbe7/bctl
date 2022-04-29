@@ -12,7 +12,8 @@ import (
 
 // initCmd represents the init command
 var (
-	projectName string
+	projectName  string
+	chartVersion string
 
 	initCmd = &cobra.Command{
 		Use:   "init [name]",
@@ -31,6 +32,7 @@ var (
 func init() {
 	initCmd.Flags().StringVar(&projectName, "project-name", "", "Имя проекта (обязательное поле)")
 	cobra.CheckErr(initCmd.MarkFlagRequired("project-name"))
+	initCmd.Flags().StringVar(&chartVersion, "chart-version", "", "Версия чарта")
 
 	// Here you will define your flags and configuration settings.
 
@@ -56,6 +58,7 @@ func initializeProject() (string, error) {
 		Path:         path,
 		AbsolutePath: wd,
 		ProjectName:  projectName,
+		ChartVersion: chartVersion,
 	}
 
 	if err := project.Create(); err != nil {

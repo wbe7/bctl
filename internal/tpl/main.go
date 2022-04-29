@@ -36,8 +36,8 @@ type: application
 version: 0.1.0 # версия ЧАРТА, обнуляется (0.1.0) с каждым релизом
 dependencies:
 - name: base
-  version: 1.5.1
-  repository: "file://./charts/base-1.5.1.tgz"
+  version: {{ if .ChartVersion }}{{ .ChartVersion }}{{ else }}CHANGEME{{ end }}
+  repository: "https://registry.tccenter.ru/chartrepo/public"
 `)
 }
 
@@ -46,8 +46,7 @@ func ArgoValuesTemplate() []byte {
 
   chartName: "{{ .ProjectName }}"
 
-  argocd:
-	#TODO
+  argocd: 	#TODO
     telegram: "CHANGEME" # id телеграм чата
     repo: # список гит реп
       - repoLink: "git@git.tccenter.ru:tc-center/infra/App/{{ .ProjectName }}-deploy.git" # ссылка на репу
@@ -80,11 +79,19 @@ func ModuleValuesTemplate() []byte {
   deployment:
     replicas: 1
     revisionHistoryLimit: 2
-	{{ if .ModuleImage }}imagePath: {{ .ModuleImage }}
-	{{ else }}#TODO
-	imagePath: CHANGEME{{ end }}
-    containerPort:
+    {{ if .ModuleImage }}
+    imagePath: {{ .ModuleImage }}
+    {{ else }}
+    imagePath: CHANGEME #TODO{{ end }}
+    ports:
       - "{{ if .ModulePort }}{{ .ModulePort }}{{ else }}8080{{ end }}"     
+    resources:
+      requests:
+        cpu: 0.75
+        memory: 750Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
 
   ingress:
     annotations:
@@ -98,6 +105,7 @@ func ModuleValuesTemplate() []byte {
         ca: cem # включаем CEM для этого хоста, может быть cem - серт от orglot.office, external - сгенерированный вручную или полученый от внешнего центра сертификации, le - серт от letsencrypt
         paths:
           - path: /
+            pathType: Prefix
 
 `)
 }
