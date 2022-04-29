@@ -36,8 +36,8 @@ type: application
 version: 0.1.0 # версия ЧАРТА, обнуляется (0.1.0) с каждым релизом
 dependencies:
 - name: base
-  version: 1.5.1
-  repository: "file://./charts/base-1.5.1.tgz"
+  version: {{ if .ChartVersion }}{{ .ChartVersion }}{{ else }}CHANGEME{{ end }}
+  repository: "https://registry.tccenter.ru/chartrepo/public/base"
 `)
 }
 
@@ -83,8 +83,15 @@ func ModuleValuesTemplate() []byte {
     imagePath: {{ .ModuleImage }}
     {{ else }}
     imagePath: CHANGEME #TODO{{ end }}
-    containerPort:
+    ports:
       - "{{ if .ModulePort }}{{ .ModulePort }}{{ else }}8080{{ end }}"     
+    resources:
+      requests:
+        cpu: 0.75
+        memory: 750Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
 
   ingress:
     annotations:
@@ -98,6 +105,7 @@ func ModuleValuesTemplate() []byte {
         ca: cem # включаем CEM для этого хоста, может быть cem - серт от orglot.office, external - сгенерированный вручную или полученый от внешнего центра сертификации, le - серт от letsencrypt
         paths:
           - path: /
+            pathType: Prefix
 
 `)
 }

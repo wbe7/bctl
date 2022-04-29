@@ -25,6 +25,7 @@ type Project struct {
 	ModuleVersion string
 	ModulePort    string
 	IngressClass  string
+	ChartVersion  string
 }
 
 func (p *Project) Create() error {

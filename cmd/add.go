@@ -41,6 +41,7 @@ func init() {
 	addCmd.Flags().StringVar(&moduleVersion, "module-version", "", "Версия модуля")
 	addCmd.Flags().StringVar(&modulePort, "module-port", "", "Порт модуля (по умолчанию: 8080)")
 	addCmd.Flags().StringVar(&ingressClass, "ingress-class", "", "Ингресс класс (по умолчанию: nginx-google-internal)")
+	addCmd.Flags().StringVar(&chartVersion, "chart-version", "", "Версия чарта")
 
 	// Here you will define your flags and configuration settings.
 
@@ -79,6 +80,7 @@ func addModule(args []string) (string, error) {
 		ModuleVersion: moduleVersion,
 		ModulePort:    modulePort,
 		IngressClass:  ingressClass,
+		ChartVersion:  chartVersion,
 	}
 
 	if err := project.AddModule(); err != nil {
