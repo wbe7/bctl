@@ -37,7 +37,7 @@ version: 0.1.0 # версия ЧАРТА, обнуляется (0.1.0) с каж
 dependencies:
 - name: base
   version: {{ if .ChartVersion }}{{ .ChartVersion }}{{ else }}CHANGEME{{ end }}
-  repository: "https://registry.tccenter.ru/chartrepo/public/base"
+  repository: "https://registry.tccenter.ru/chartrepo/public"
 `)
 }
 
