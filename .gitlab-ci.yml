@@ -4,6 +4,7 @@ stages:
   - test
   - build
   - upload
+  - release
 
 format:
   stage: test
@@ -45,7 +46,7 @@ compile:
 upload:
   stage: upload
   script:
-    - - |
+    - |
         platforms=("windows/amd64" "windows/386" "darwin/amd64" "darwin/arm64" "linux/amd64" "linux/386" "linux/arm64")
 
         for platform in "${platforms[@]}"
@@ -63,5 +64,28 @@ upload:
     paths:
       - binaries
     expire_in: 1 yrs
+  only:
+    - tags
+
+release:
+  stage: release
+  script:
+    - |
+        platforms=("windows/amd64" "windows/386" "darwin/amd64" "darwin/arm64" "linux/amd64" "linux/386" "linux/arm64")
+        DESCRIPTION='All assets for release $CI_COMMIT_TAG'
+        ASSETS=''
+        for platform in "${platforms[@]}"
+        do
+        	platform_split=(${platform//\// })
+        	GOOS=${platform_split[0]}
+        	GOARCH=${platform_split[1]}
+        	output_name=bctl'-'$GOOS'-'$GOARCH'-'$CI_COMMIT_TAG
+        	if [ $GOOS = "windows" ]; then
+        		output_name+='.exe'
+        	fi	
+            ASSETS="${ASSETS}{ "name": "$output_name", "url": "https://nexus.tccenter.ru/repository/irsd", "filepath": "/bctl/$CI_COMMIT_TAG/$output_name", "link_type":"other" },"
+                       
+        done
+        curl --request POST --header 'Content-Type: application/json' --header "Private-Token: $ACCESS_TOKEN" --data '{"name": "Release $CI_COMMIT_TAG", "tag_name": "$CI_COMMIT_TAG", "description": "$DESCRIPTION", "assets": { "links": [$ASSETS] }}' "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
   only:
     - tags
