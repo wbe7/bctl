@@ -57,7 +57,7 @@ upload:
         	if [ $GOOS = "windows" ]; then
         		output_name+='.exe'
         	fi	
-            curl -v --user '$SERVICE_USER:$SERVICE_PASSWORD' --upload-file binaries/$output_name https://nexus.tccenter.ru/repository/irsd/bctl/$CI_COMMIT_TAG/$output_name
+            curl -v --user "$SERVICE_USER:$SERVICE_PASSWORD" --upload-file binaries/$output_name https://nexus.tccenter.ru/repository/irsd/bctl/$CI_COMMIT_TAG/$output_name
         done
   artifacts:
     paths:
