@@ -83,7 +83,7 @@ release:
             if [ $GOOS = "windows" ]; then
             output_name+='.exe'
             fi	
-            ASSETS="${ASSETS}{ \"name\": \"$output_name\", \"url\": \"https://nexus.tccenter.ru/repository/irsd\", \"filepath\": \"/bctl/$CI_COMMIT_TAG/$output_name\", \"link_type\":\"other\" }"
+            ASSETS="${ASSETS}{ \"name\": \"$output_name\", \"url\": \"https://nexus.tccenter.ru/repository/irsd/bctl/$CI_COMMIT_TAG/$output_name\", \"link_type\":\"package\" }"
             if [ $counter -lt ${#platforms[@]} ]
             then
                 ASSETS="${ASSETS},"
