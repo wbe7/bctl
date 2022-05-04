@@ -89,8 +89,8 @@ release:
                 ASSETS="${ASSETS},"
             else
                 ASSETS="${ASSETS}"
-          fi
-          (( counter = counter + 1 ))
+            fi
+            (( counter = counter + 1 ))
         done
         curl --request POST --header 'Content-Type: application/json' --header "Private-Token: $ACCESS_TOKEN" --data "{\"name\": \"Release $CI_COMMIT_TAG\", \"tag_name\": \"$CI_COMMIT_TAG\", \"description\": \"$DESCRIPTION\", \"assets\": { \"links\": [$ASSETS] }}" "$CI_API_V4_URL/projects/$CI_PROJECT_ID/releases"
   only:
