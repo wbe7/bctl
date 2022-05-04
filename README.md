@@ -17,3 +17,5 @@ bctl add frontend --project-name webapp --module-image web/webapp --module-versi
 # Помощь
 bctl add --help
 ```
+
+#### Найти последнюю версию утилиты можно по [ссылке](https://git.tccenter.ru/tc-center/infra/App/base/bctl/-/releases).
