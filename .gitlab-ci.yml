@@ -72,7 +72,7 @@ release:
   script:
     - |
         platforms=("windows/amd64" "windows/386" "darwin/amd64" "darwin/arm64" "linux/amd64" "linux/386" "linux/arm64")
-        DESCRIPTION='All assets for release $CI_COMMIT_TAG'
+        DESCRIPTION="Automaticly created using the GitLab Pipelines $EXTRA_DESCRIPTION"
         ASSETS=''
         counter=1
         for platform in "${platforms[@]}"
